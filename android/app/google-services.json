@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "448427249975",
+    "project_id": "voxvalleyfire",
+    "storage_bucket": "voxvalleyfire.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448427249975:android:af3d4e1dc9c0c202404ab2",
+        "android_client_info": {
+          "package_name": "com.example.voxflut"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCva_rFb6sZWwj7-tqP7H6LFqsHJrrJNow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
