@@ -14,7 +14,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.ca.dao.CSAppDetails;
 import com.ca.wrapper.CSClient;
+import com.ca.wrapper.CSCall;
+import com.ca.Utils.CSConstants;
 import com.ca.wrapper.CSDataProvider;
+import com.ca.dao.CSExplicitEventReceivers;
 import com.cacore.services.CACommonService;
 
 import java.util.Objects;
@@ -30,6 +33,7 @@ public class MainActivity extends FlutterActivity {
     private BroadcastReceiver csClientReceiver;
 
     CSClient CSClientObj = new CSClient();
+    CSCall CSCallObj = new CSCall();
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -46,6 +50,7 @@ public class MainActivity extends FlutterActivity {
         filter.addAction("CSCLIENT_ACTIVATION_RESPONSE");
         filter.addAction("CSCLIENT_LOGIN_RESPONSE");
         filter.addAction("CSCLIENT_INITILIZATION_RESPONSE");
+        filter.addAction("CSCLIENT_PSTN_REGISTRATION_RESPONSE");
 
         csClientReceiver = new BroadcastReceiver() {
             @Override
@@ -57,11 +62,13 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCLIENT_INITILIZATION_RESPONSE".equals(action)) {
                     handleInitializationResponse(intent);
                 } else if ("CSCLIENT_SIGNUP_RESPONSE".equals(action)) {
-                    handleSignupResponse(intent);
+                    handleResponse(intent, action);
                 } else if ("CSCLIENT_ACTIVATION_RESPONSE".equals(action)) {
-                    handleActivationResponse(intent);
+                    handleResponse(intent, action);
                 } else if ("CSCLIENT_LOGIN_RESPONSE".equals(action)) {
-                    handleLoginResponse(intent);
+                    handleResponse(intent, action);
+                } else if ("CSCLIENT_PSTN_REGISTRATION_RESPONSE".equals(action)) {
+                    handleResponse(intent, action);
                 }
 
                 logIntentData(intent);
@@ -72,14 +79,15 @@ public class MainActivity extends FlutterActivity {
 
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler((call, result) -> {
             if (call.method.equals("initCS")) {
-                String appName = "testvvk";
-                String projectId = "pid_fc79d2e5_c0dd_4932_9ba1_919b33eb1ce4";
+                String appName = "voxFlut";
+                String projectId = "pid_b872f9bf_34e1_4872_8c0a_b58ee0a7a492";
                 CSAppDetails csAppDetails = new CSAppDetails(appName, projectId);
                 CSClientObj.initialize(null, 0, csAppDetails);
 
                 result.success("Superman Initialization successful");
             } else if (call.method.equals("callNative")) {
-//                CSClientObj.signUp("+917893388718", "12345", true);
+//                CSClientObj.signUp("+917015507141", "12345", true);
+//                CSClientObj.login("+917015507141", "12345");
 
                 result.success("Superman Call Native successful");
             } else {
@@ -95,10 +103,28 @@ public class MainActivity extends FlutterActivity {
         if ("success".equals(result)) {
             Log.i(TAG, "Initialization Successful! Result Code: " + resultCode);
 
+//            boolean reset = CSClientObj.reset();
+//            Log.i(TAG, "reset: " + reset);
+
             if (isNetworkAvailable(getApplicationContext())) {
-//                new CSClient().login("+917078202575", "12345");
-                boolean activated = CSClientObj.activate("+917078202575", "");
-                System.out.println("Superman Activation: " + activated);
+                CSClientObj.login("+917015507141", "1234");
+//                boolean registerEvent = CSClientObj.registerExplicitEventReceivers(new CSExplicitEventReceivers(
+//                        "com.ca.receivers.CSUserJoined",
+//                        "com.ca.receivers.CSCallReceiver",
+//                        "com.ca.receivers.CSChatReceiver",
+//                        "com.ca.receivers.CSGroupNotificationReceiver",
+//                        "com.ca.receivers.CSCallMissed"
+//                ));
+//                boolean callAudio = CSCallObj.setPreferredAudioCodec(CSConstants.PreferredAudioCodec.G722);
+//                boolean callEnable = CSCallObj.enableDefaultlocalVideoPreviewUX(true);
+//                boolean callRegisterPSTN = CSClientObj.registerForPSTNCalls();
+//                boolean enableContact = CSClientObj.enableNativeContacts(true, 91);
+//
+//                Log.i(TAG, "registerEvent: " + registerEvent);
+//                Log.i(TAG, "callAudio: " + callAudio);
+//                Log.i(TAG, "callEnable: " + callEnable);
+//                Log.i(TAG, "callRegisterPSTN: " + callRegisterPSTN);
+//                Log.i(TAG, "enableContact: " + enableContact);
             }
         } else if ("failure".equals(result)) {
             Log.e(TAG, "Initialization Failed! Result Code: " + resultCode);
@@ -107,51 +133,16 @@ public class MainActivity extends FlutterActivity {
         }
     }
 
-    private void handleSignupResponse(Intent intent) {
+    private void handleResponse(Intent intent, String action) {
         String result = intent.getStringExtra("RESULT");
         String resultCode = Objects.requireNonNull(Objects.requireNonNull(intent.getExtras()).get("RESULTCODE")).toString();
 
         if ("success".equals(result)) {
-            Log.i(TAG, "Signup Successful! Result Code: " + resultCode);
+            Log.i(TAG, action + " Successful! Result Code: " + resultCode);
         } else if ("failure".equals(result)) {
-            Log.e(TAG, "Signup Failed! Result Code: " + resultCode);
+            Log.e(TAG, action + " Failed! Result Code: " + resultCode);
         } else {
-            Log.e(TAG, "Unknown RESULT in CSCLIENT_SIGNUP_RESPONSE");
-        }
-    }
-
-    private void handleLoginResponse(Intent intent) {
-        String result = intent.getStringExtra("RESULT");
-        String resultCode = Objects.requireNonNull(Objects.requireNonNull(intent.getExtras()).get("RESULTCODE")).toString();
-
-        if ("success".equals(result)) {
-            Log.i(TAG, "Login Successful! Result Code: " + resultCode);
-        } else if ("failure".equals(result)) {
-            Log.e(TAG, "Login Failed! Result Code: " + resultCode);
-        } else {
-            Log.e(TAG, "Unknown RESULT in CSCLIENT_LOGIN_RESPONSE");
-        }
-
-        boolean loginStatus = CSClient.getLoginstatus();
-        System.out.println("Superman Login Status: " + loginStatus);
-
-        String loginId = CSDataProvider.getLoginID();
-        System.out.println("Superman Login ID: " + loginId);
-
-//        boolean reset = CSClientObj.reset();
-//        System.out.println("Superman Reset: " + reset);
-    }
-
-    private void handleActivationResponse(Intent intent) {
-        String result = intent.getStringExtra("RESULT");
-        String resultCode = Objects.requireNonNull(Objects.requireNonNull(intent.getExtras()).get("RESULTCODE")).toString();
-
-        if ("success".equals(result)) {
-            Log.i(TAG, "Activation Successful! Result Code: " + resultCode);
-        } else if ("failure".equals(result)) {
-            Log.e(TAG, "Activation Failed! Result Code: " + resultCode);
-        } else {
-            Log.e(TAG, "Unknown RESULT in CSCLIENT_ACTIVATION_RESPONSE");
+            Log.e(TAG, "Unknown RESULT in " + action);
         }
     }
 
@@ -177,7 +168,7 @@ public class MainActivity extends FlutterActivity {
             assert activeNetworkInfo != null;
             return activeNetworkInfo.isConnectedOrConnecting();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Network availability check failed", e);
             return false;
         }
     }
