@@ -99,7 +99,25 @@ class _DialerState extends State<Dialer> {
             ...List.generate(9, (index) {
               return _buildNumberButton('${index + 1}');
             }),
-            _buildNumberButton('+'),
+            ElevatedButton(
+              onPressed: () => {
+                setState(() {
+                  _enteredNumber = "+91";
+                })
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red.shade400,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                minimumSize: const Size(120, 100),
+              ),
+              child: const Icon(
+                Icons.delete,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
             _buildNumberButton('0'),
             ElevatedButton(
               onPressed: () => _onCall(),
