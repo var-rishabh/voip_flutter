@@ -12,13 +12,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.ca.dao.CSAppDetails;
 import com.ca.wrapper.CSClient;
-import com.ca.wrapper.CSCall;
-import com.ca.Utils.CSConstants;
 import com.ca.wrapper.CSDataProvider;
-import com.ca.dao.CSExplicitEventReceivers;
 import com.cacore.services.CACommonService;
-
-import java.util.Objects;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.plugin.common.MethodChannel;
@@ -26,7 +21,8 @@ import io.flutter.embedding.engine.FlutterEngine;
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "com.vox/call";
-    private static final String TAG = "Superman";
+    private static final String TAG = "VOX_SDK";
+
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver csClientReceiver;
 
@@ -61,87 +57,54 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCLIENT_INITILIZATION_RESPONSE".equals(action)) {
                     response.handleInitializationResponse();
                 } else if ("CSCLIENT_SIGNUP_RESPONSE".equals(action)) {
-                    handleResponse(intent, action);
+                    response.handleResponse();
                 } else if ("CSCLIENT_ACTIVATION_RESPONSE".equals(action)) {
-                    handleResponse(intent, action);
+                    response.handleResponse();
                 } else if ("CSCLIENT_LOGIN_RESPONSE".equals(action)) {
-                    handleLoginResponse(intent, action);
+                    response.handleLoginResponse();
                 } else if ("CSCLIENT_PSTN_REGISTRATION_RESPONSE".equals(action)) {
-                    handleResponse(intent, action);
+                    response.handleResponse();
                 }
 
-                logIntentData(intent);
+                logIntentData(intent, action);
             }
         };
 
         localBroadcastManager.registerReceiver(csClientReceiver, filter);
 
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler((call, result) -> {
-            if (call.method.equals("initCS")) {
-//                String appName = "voxFlut";
-                String appName = "Runo";
-//                String projectId = "pid_b872f9bf_34e1_4872_8c0a_b58ee0a7a492";
-                String projectId = "pid_0d5bb4ba_421b_4351_b6aa_f9585ba9f309";
+            if (call.method.equals("initVoxSDK")) {
+//                String appName = "Runo";
+                String appName = "testproject3";
+
+//                String projectId = "pid_0d5bb4ba_421b_4351_b6aa_f9585ba9f309";
+                String projectId = "pid_8bd54124_dbf1_4df8_85cf_320c933258a0";
+
                 CSAppDetails csAppDetails = new CSAppDetails(appName, projectId);
                 CSClientObj.initialize(null, 0, csAppDetails);
 
 //                CSClientObj.reset();
 
-                result.success("Superman Initialization successful");
-            } else if (call.method.equals("callNative")) {
-//                CSClientObj.signUp("+917015507141", "12345", true);
-//                CSClientObj.login("devendar", "12345678");
+                result.success("VOX_SDK Initialized");
 
-                result.success("Superman Call Native successful");
+            } else if (call.method.equals("getLoginStatus")) {
+                boolean isLoggedIn = CSDataProvider.getLoginstatus();
+                result.success(isLoggedIn);
             } else {
                 result.notImplemented();
             }
         });
     }
 
-    private void handleLoginResponse(Intent intent, String action) {
-        String result = intent.getStringExtra("RESULT");
-        String resultCode = Objects.requireNonNull(Objects.requireNonNull(intent.getExtras()).get("RESULTCODE")).toString();
-
-        if ("success".equals(result)) {
-            Log.i(TAG, action + " Successful! Result Code: " + resultCode);
-
-            boolean status = CSDataProvider.getLoginstatus();
-            Log.i(TAG, "Login Status: " + status);
-
-        } else if ("failure".equals(result)) {
-            Log.e(TAG, action + " Failed! Result Code: " + resultCode);
-        } else {
-            Log.e(TAG, "Unknown RESULT in " + action);
-        }
-    }
-
-    private void handleResponse(Intent intent, String action) {
-        String result = intent.getStringExtra("RESULT");
-        String resultCode = Objects.requireNonNull(Objects.requireNonNull(intent.getExtras()).get("RESULTCODE")).toString();
-
-        if ("success".equals(result)) {
-            Log.i(TAG, action + " Successful! Result Code: " + resultCode);
-
-//            boolean status = CSDataProvider.getSignUpstatus();
-//            Log.i(TAG, "SignUp Status: " + status);
-
-        } else if ("failure".equals(result)) {
-            Log.e(TAG, action + " Failed! Result Code: " + resultCode);
-        } else {
-            Log.e(TAG, "Unknown RESULT in " + action);
-        }
-    }
-
-    private void logIntentData(Intent intent) {
+    private void logIntentData(Intent intent, String action) {
         if (intent.getExtras() != null) {
             Bundle extras = intent.getExtras();
             for (String key : extras.keySet()) {
                 Object value = extras.get(key);
-                Log.d("Superman IntentData", String.format("Key: %s || Value: %s", key, value != null ? value.toString() : "null"));
+                Log.d(TAG, String.format("Action: %s ||Key: %s || Value: %s", action, key, value != null ? value.toString() : "null"));
             }
         } else {
-            Log.d("Superman IntentData", "No extras in the intent");
+            Log.d(TAG, "No extras in the intent");
         }
     }
 

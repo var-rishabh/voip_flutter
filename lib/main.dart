@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:voxflut/screens/call_logs.dart';
-import 'package:voxflut/screens/contacts.dart';
-import 'package:voxflut/screens/dialer.dart';
+
+import 'helper/method_channels.dart';
+import 'screens/call_logs.dart';
+import 'screens/contacts.dart';
+import 'screens/dialer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,8 +15,6 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
-
-const platform = MethodChannel('com.vox/call');
 
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
@@ -32,19 +31,10 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _initCS() async {
-    try {
-      final String result = await platform.invokeMethod('initCS');
-      print(result);
-    } on PlatformException catch (e) {
-      print('Failed to get platform version: ${e.message}');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    _initCS();
+    initVoxSDK();
   }
 
   @override
@@ -68,31 +58,28 @@ class _MyAppState extends State<MyApp> {
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.grey,
           backgroundColor: Colors.blue.shade900,
-          items: [
+          items: const [
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.call,
-                color: _selectedIndex == 0 ? Colors.white : Colors.grey,
-              ),
+              icon: Icon(Icons.call),
               label: 'Call Logs',
             ),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.dialpad,
-                color: _selectedIndex == 1 ? Colors.white : Colors.grey,
-              ),
+              icon: Icon(Icons.dialpad),
               label: 'Dialer',
             ),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.contacts,
-                color: _selectedIndex == 2 ? Colors.white : Colors.grey,
-              ),
+              icon: Icon(Icons.contacts),
               label: 'Contacts',
             ),
           ],
         ),
-        body: tabs[_selectedIndex],
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
+          child: tabs[_selectedIndex],
+        ),
       ),
     );
   }
