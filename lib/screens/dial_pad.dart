@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:voxflut/screens/call_screen.dart';
 
-class Dialer extends StatefulWidget {
+class DialPad extends StatefulWidget {
   final String? number;
 
-  const Dialer({
+  const DialPad({
     super.key,
     this.number,
   });
 
   @override
-  State<Dialer> createState() => _DialerState();
+  State<DialPad> createState() => _DialPadState();
 }
 
-class _DialerState extends State<Dialer> {
+class _DialPadState extends State<DialPad> {
   String _enteredNumber = "+91";
 
   void _onKeyPress(String value) {
@@ -33,9 +34,21 @@ class _DialerState extends State<Dialer> {
   }
 
   void _onCall() {
-    if (_enteredNumber.isNotEmpty) {
+    if (_enteredNumber.length == 13) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CallScreen(
+            contactName: "Unknown",
+            contactNumber: _enteredNumber,
+          ),
+        ),
+      );
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Calling $_enteredNumber...")),
+        const SnackBar(
+          content: Text("Please enter a valid number"),
+        ),
       );
     }
   }
@@ -53,8 +66,7 @@ class _DialerState extends State<Dialer> {
       child: Text(
         number,
         style: const TextStyle(
-          fontSize: 40,
-          fontWeight: FontWeight.bold,
+          fontSize: 35,
           color: Colors.black,
         ),
       ),

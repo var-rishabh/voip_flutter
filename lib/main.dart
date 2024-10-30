@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'helper/method_channels.dart';
 import 'screens/call_logs.dart';
 import 'screens/contacts.dart';
-import 'screens/dialer.dart';
+import 'screens/dial_pad.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   List<Widget> tabs = [
     const CallLogs(),
-    Dialer(),
+    const DialPad(),
     const Contacts(),
   ];
 
