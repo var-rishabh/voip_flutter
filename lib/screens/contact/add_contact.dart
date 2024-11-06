@@ -78,6 +78,7 @@ class _AddContactState extends State<AddContact> {
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
                 autofocus: true,
@@ -103,17 +104,17 @@ class _AddContactState extends State<AddContact> {
                 onPressed: _onSave,
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  minimumSize: const Size(180, 0),
-                  padding: const EdgeInsets.all(20),
+                  minimumSize: const Size(100, 0),
+                  padding: const EdgeInsets.all(12),
                   backgroundColor: Colors.cyan.shade900,
                 ),
                 child: const Text(
                   'Save',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

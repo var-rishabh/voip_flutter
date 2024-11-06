@@ -3,9 +3,6 @@ package com.example.voxflut;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ca.wrapper.CSClient;
-import com.ca.wrapper.CSDataProvider;
-
 import java.util.Objects;
 
 import android.net.ConnectivityManager;
