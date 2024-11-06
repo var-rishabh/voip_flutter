@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'helper/method_channels.dart';
 import 'screens/call_logs.dart';
-import 'screens/contacts.dart';
+import 'screens/contact/add_contact.dart';
+import 'screens/contact/contacts.dart';
 import 'screens/dial_pad.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -17,7 +23,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 2;
 
   List<Widget> tabs = [
     const CallLogs(),
@@ -39,16 +45,35 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: const Text('Vox',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              )),
+          title: const Text(
+            'Vox X Runo',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           backgroundColor: Colors.cyan.shade900,
+          actions: [
+            _selectedIndex == 2
+                ? IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddContact(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  )
+                : const SizedBox(),
+          ],
         ),
         backgroundColor: Colors.cyan.shade50,
         bottomNavigationBar: BottomNavigationBar(
@@ -74,13 +99,8 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.all(8),
           child: tabs[_selectedIndex],
-        ),
-      ),
-    );
+        ));
   }
 }

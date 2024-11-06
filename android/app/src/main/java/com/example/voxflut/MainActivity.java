@@ -4,16 +4,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.ca.Utils.CSDbFields;
 import com.ca.dao.CSAppDetails;
+import com.ca.dao.CSContact;
 import com.ca.wrapper.CSClient;
+import com.ca.Utils.CSConstants;
 import com.ca.wrapper.CSDataProvider;
 import com.cacore.services.CACommonService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.plugin.common.MethodChannel;
@@ -46,6 +54,10 @@ public class MainActivity extends FlutterActivity {
         filter.addAction("CSCLIENT_ACTIVATION_RESPONSE");
         filter.addAction("CSCLIENT_PSTN_REGISTRATION_RESPONSE");
 
+        filter.addAction("CSCLIENT_ADDCONTACT_RESPONSE");
+        filter.addAction("CSCLIENT_DELETECONTACT_RESPONSE");
+        filter.addAction("CSCONTACTS_CONTACTSUPDATED");
+
         csClientReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -64,6 +76,14 @@ public class MainActivity extends FlutterActivity {
                     response.handleLoginResponse();
                 } else if ("CSCLIENT_PSTN_REGISTRATION_RESPONSE".equals(action)) {
                     response.handleResponse();
+                } else if ("CSCLIENT_ADDCONTACT_RESPONSE".equals(action)) {
+                    response.handleResponse();
+                } else if ("CSCLIENT_DELETECONTACT_RESPONSE".equals(action)) {
+                    response.handleResponse();
+                } else if ("CSCONTACTS_CONTACTSUPDATED".equals(action)) {
+                    Log.i(TAG, "Contacts Updated");
+                } else {
+                    Log.e(TAG, "Unknown Action: " + action);
                 }
 
                 logIntentData(intent, action);
@@ -90,10 +110,66 @@ public class MainActivity extends FlutterActivity {
             } else if (call.method.equals("getLoginStatus")) {
                 boolean isLoggedIn = CSDataProvider.getLoginstatus();
                 result.success(isLoggedIn);
+            } else if (call.method.equals("addContact")) {
+                String name = call.argument("name");
+                String number = call.argument("number");
+                int contactType = CSConstants.CONTACTTYPE_MOBILE;
+                if (name == null || number == null) {
+                    result.error(TAG, "VOX_SDK Name or number is null", null);
+                    return;
+                }
+
+                try {
+                    boolean isFavourite = false;
+                    CSContact csContact = new CSContact(
+                            name,
+                            number,
+                            contactType,
+                            number,
+                            isFavourite
+                    );
+
+                    ArrayList<CSContact> contactsList = new ArrayList<>();
+                    contactsList.add(csContact);
+
+                    CSClientObj.addContacts(contactsList);
+
+                    // Send success response back to Flutter
+                    result.success("VOX_SDK Contact added successfully.");
+                } catch (Exception e) {
+                    result.error("VOX_SDK ADD_CONTACT_ERROR", "Failed to add contact: " + e.getMessage(), null);
+                }
+            } else if (call.method.equals("getContacts")) {
+                Map<String, String> contacts = getStringStringMap();
+                result.success(contacts);
+            } else if (call.method.equals("deleteContact")) {
+                String number = call.argument("number");
+                try {
+                    CSClientObj.deleteContact(number);
+                    result.success("VOX_SDK Contact deleted successfully.");
+                } catch (Exception e) {
+                    result.error("VOX_SDK DELETE_CONTACT_ERROR", "Failed to delete contact: " + e.getMessage(), null);
+                }
             } else {
                 result.notImplemented();
             }
         });
+    }
+
+    private static @NonNull Map<String, String> getStringStringMap() {
+        Cursor cfcc = CSDataProvider.getContactsCursor();
+        Map<String, String> contacts = new HashMap<>();
+        int iterationsForContacts = cfcc.getCount();
+        if (cfcc.getCount() > 0) {
+            while (iterationsForContacts > 0) {
+                cfcc.moveToNext();
+                String name = cfcc.getString(cfcc.getColumnIndexOrThrow(CSDbFields.KEY_CONTACT_NAME));
+                String number = cfcc.getString(cfcc.getColumnIndexOrThrow(CSDbFields.KEY_CONTACT_NUMBER));
+                contacts.put(number, name);
+                iterationsForContacts = iterationsForContacts - 1;
+            }
+        }
+        return contacts;
     }
 
     private void logIntentData(Intent intent, String action) {
