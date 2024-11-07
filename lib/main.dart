@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'helper/method_channels.dart';
+import 'helper/native_event_listner.dart';
 import 'screens/call_logs.dart';
 import 'screens/contact/add_contact.dart';
 import 'screens/contact/contacts.dart';
@@ -25,6 +26,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 2;
 
+  bool _isLogin = false;
+
   List<Widget> tabs = [
     const CallLogs(),
     const DialPad(),
@@ -41,6 +44,17 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initVoxSDK();
+    NativeEventListener.startListening(
+      (event) {
+        switch (event.keys.first) {
+          case 'currentLoginStatus':
+            setState(() {
+              _isLogin = event['currentLoginStatus'];
+            });
+            break;
+        }
+      },
+    );
   }
 
   @override
@@ -100,7 +114,25 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(8),
-          child: tabs[_selectedIndex],
+          child: _isLogin
+              ? tabs[_selectedIndex]
+              : Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        color: Colors.cyan.shade500,
+                      ),
+                      const SizedBox(height: 30),
+                      Text('Restart the App to login again.',
+                          style: TextStyle(
+                            color: Colors.cyan.shade900,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ],
+                  ),
+                ),
         ));
   }
 }

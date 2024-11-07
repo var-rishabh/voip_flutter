@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../helper/method_channels.dart';
+import '../../helper/native_event_listner.dart';
 import '../call_screen.dart';
 
 class Contacts extends StatefulWidget {
@@ -12,6 +13,7 @@ class Contacts extends StatefulWidget {
 
 class _ContactsState extends State<Contacts> {
   Map<dynamic, dynamic> _contacts = {};
+  bool? _updateContactsSuccess;
 
   void _getContacts() async {
     final contacts = await getContacts();
@@ -20,10 +22,62 @@ class _ContactsState extends State<Contacts> {
     });
   }
 
+  void showUpdateContactMessage() {
+    if (_updateContactsSuccess != null) {
+      if (_updateContactsSuccess!) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text("Contacts updated successfully."),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text("Failed to update contacts."),
+          ),
+        );
+      }
+      _updateContactsSuccess = null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getContacts();
+    NativeEventListener.startListening(
+      (event) {
+        switch (event.keys.first) {
+          case 'contactAdded':
+            if (event['contactAdded']) {
+              setState(() {
+                _updateContactsSuccess = true;
+              });
+            } else {
+              setState(() {
+                _updateContactsSuccess = false;
+              });
+            }
+            showUpdateContactMessage();
+            _getContacts();
+            break;
+
+          case "contactDeleted":
+            if (event["contactDeleted"]) {
+              setState(() {
+                _updateContactsSuccess = true;
+              });
+            } else {
+              setState(() {
+                _updateContactsSuccess = false;
+              });
+            }
+            showUpdateContactMessage();
+        }
+      },
+    );
   }
 
   @override
@@ -49,7 +103,7 @@ class _ContactsState extends State<Contacts> {
                     ),
                   ),
                   title: Text(name),
-                  subtitle: Text("+91$number"),
+                  subtitle: Text("+91 ${number.substring(3)}"),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

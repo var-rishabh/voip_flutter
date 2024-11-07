@@ -4,8 +4,7 @@ const platform = MethodChannel('com.vox/call');
 
 Future<void> initVoxSDK() async {
   try {
-    final String result = await platform.invokeMethod('initVoxSDK');
-    print(result);
+    await platform.invokeMethod('initVoxSDK');
   } on PlatformException catch (e) {
     print('Failed to initialize SDK: ${e.message}');
   }
@@ -13,11 +12,10 @@ Future<void> initVoxSDK() async {
 
 Future<void> addContact(String name, String number) async {
   try {
-    final String result = await platform.invokeMethod('addContact', {
+    await platform.invokeMethod('addContact', {
       'name': name,
       'number': number,
     });
-    print(result);
   } on PlatformException catch (e) {
     print('Failed to add contact: ${e.message}');
   }
@@ -25,9 +23,11 @@ Future<void> addContact(String name, String number) async {
 
 Future<Map<dynamic, dynamic>> getContacts() async {
   try {
-    final Map<dynamic, dynamic> result =
-        await platform.invokeMethod('getContacts');
-    print("VOX_SDK: $result");
+    Map<dynamic, dynamic> result = await platform.invokeMethod('getContacts');
+    var sortedEntries = result.entries.toList()
+      ..sort((a, b) => a.value.toLowerCase().compareTo(b.value.toLowerCase()));
+    result = Map.fromEntries(sortedEntries);
+
     return result;
   } on PlatformException catch (e) {
     print('Failed to get contacts: ${e.message}');
@@ -37,10 +37,9 @@ Future<Map<dynamic, dynamic>> getContacts() async {
 
 Future<void> deleteContact(String number) async {
   try {
-    final String result = await platform.invokeMethod('deleteContact', {
+    await platform.invokeMethod('deleteContact', {
       'number': number,
     });
-    print(result);
   } on PlatformException catch (e) {
     print('Failed to delete contact: ${e.message}');
   }

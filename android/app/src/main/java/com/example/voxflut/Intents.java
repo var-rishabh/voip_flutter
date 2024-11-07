@@ -7,7 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class intents {
+public class Intents {
     private static final String TAG = "VOX_SDK";
 
     public static @NonNull IntentFilter getIntentFilter() {
@@ -31,7 +31,7 @@ public class intents {
             Bundle extras = intent.getExtras();
             for (String key : extras.keySet()) {
                 Object value = extras.get(key);
-                Log.d(TAG, String.format("Action: %s ||Key: %s || Value: %s", action, key, value != null ? value.toString() : "null"));
+                Log.d(TAG, String.format("%s = Key: %s || Value: %s", action, key, value != null ? value.toString() : "null"));
             }
         } else {
             Log.d(TAG, "No extras in the intent");

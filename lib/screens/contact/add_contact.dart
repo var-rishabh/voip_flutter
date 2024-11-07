@@ -19,6 +19,7 @@ class _AddContactState extends State<AddContact> {
       if (_numberController.text.length != 10) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
+            duration: Duration(seconds: 1),
             content: Text("Please enter a valid number"),
           ),
         );
@@ -28,15 +29,11 @@ class _AddContactState extends State<AddContact> {
         _nameController.text.toString(),
         "+91${_numberController.text}",
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Contact added successfully."),
-        ),
-      );
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
+          duration: Duration(seconds: 1),
           content: Text("Please fill all the fields."),
         ),
       );
