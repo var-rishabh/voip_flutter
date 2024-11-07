@@ -10,6 +10,56 @@ Future<void> initVoxSDK() async {
   }
 }
 
+Future<void> initiateCall(String number) async {
+  try {
+    await platform.invokeMethod('initiateCall', {
+      'number': number,
+    });
+  } on PlatformException catch (e) {
+    print('Failed to initiate call: ${e.message}');
+  }
+}
+
+Future<void> onSpeaker(bool onSpeaker) async {
+  try {
+    await platform.invokeMethod('onSpeaker', {
+      'onSpeaker': onSpeaker,
+    });
+  } on PlatformException catch (e) {
+    print('Failed to turn on speaker: ${e.message}');
+  }
+}
+
+Future<void> muteCall(bool onMute) async {
+  try {
+    await platform.invokeMethod('muteCall', {
+      'onMute': onMute,
+    });
+  } on PlatformException catch (e) {
+    print('Failed to mute call: ${e.message}');
+  }
+}
+
+Future<void> holdCall(bool onHold) async {
+  try {
+    await platform.invokeMethod('holdCall', {
+      'onHold': onHold,
+    });
+  } on PlatformException catch (e) {
+    print('Failed to hold call: ${e.message}');
+  }
+}
+
+Future<void> endCall(String number) async {
+  try {
+    await platform.invokeMethod('endCall', {
+      'number': number,
+    });
+  } on PlatformException catch (e) {
+    print('Failed to end call: ${e.message}');
+  }
+}
+
 Future<void> addContact(String name, String number) async {
   try {
     await platform.invokeMethod('addContact', {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'helper/method_channels.dart';
 import 'helper/native_event_listner.dart';
@@ -40,9 +41,20 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> _requestMicrophonePermission() async {
+    final status = await Permission.microphone.request();
+    if (status.isDenied) {
+      print("Microphone permission denied");
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _requestMicrophonePermission();
+
     initVoxSDK();
     NativeEventListener.startListening(
       (event) {

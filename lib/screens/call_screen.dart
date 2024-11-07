@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helper/method_channels.dart';
+
 class CallScreen extends StatefulWidget {
   final String contactName;
   final String contactNumber;
@@ -25,12 +27,14 @@ class _CallScreenState extends State<CallScreen> {
     setState(() {
       _onSpeaker = !_onSpeaker;
     });
+    onSpeaker(_onSpeaker);
   }
 
   void _onMutePressed() {
     setState(() {
       _onMute = !_onMute;
     });
+    muteCall(_onMute);
   }
 
   void _onHoldPressed() {
@@ -38,6 +42,13 @@ class _CallScreenState extends State<CallScreen> {
       _onHold = !_onHold;
       _callStatus = _onHold ? 'On Hold' : 'Calling...';
     });
+    holdCall(_onHold);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initiateCall(widget.contactNumber);
   }
 
   @override
@@ -116,6 +127,7 @@ class _CallScreenState extends State<CallScreen> {
   Widget _buildEndCallButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        endCall(widget.contactNumber);
         Navigator.pop(context);
       },
       style: ElevatedButton.styleFrom(

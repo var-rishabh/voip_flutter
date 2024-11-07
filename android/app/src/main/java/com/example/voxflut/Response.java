@@ -1,5 +1,6 @@
 package com.example.voxflut;
 
+import com.ca.wrapper.CSClient;
 import com.example.voxflut.functions.Auth;
 
 import android.content.Context;
@@ -32,9 +33,11 @@ public class Response {
         }
     }
 
-    public void loginResponse() {
+    public void loginResponse(CSClient CSClientObj) {
         if ("success".equals(result)) {
             Log.i(TAG, "Login Successful!");
+
+            CSClientObj.registerForPSTNCalls();
         } else {
             Log.e(TAG, "Login Failed! CSCLIENT_LOGIN_RESPONSE: " + result);
         }
@@ -63,13 +66,11 @@ public class Response {
         }
     }
 
-    public void handleResponse() {
+    public void handleResponse(String action) {
         if ("success".equals(result)) {
-            Log.i(TAG, "Successful!");
-        } else if ("failure".equals(result)) {
-            Log.e(TAG, "Failed!");
+            Log.i(TAG, action + " Successful!");
         } else {
-            Log.e(TAG, "Unknown RESULT in ");
+            Log.e(TAG, action + " Failed! " + result);
         }
     }
 

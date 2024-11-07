@@ -9,10 +9,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.ca.wrapper.CSCall;
 import com.ca.wrapper.CSClient;
 import com.cacore.services.CACommonService;
 import com.example.voxflut.functions.Auth;
 import com.example.voxflut.functions.Contact;
+import com.example.voxflut.functions.Voip_Call;
 
 import java.util.Map;
 
@@ -27,9 +29,10 @@ public class MainActivity extends FlutterActivity {
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver csClientReceiver;
 
-    public EventNotifier eventNotifier;
-
+    CSCall CSCallObj = new CSCall();
     CSClient CSClientObj = new CSClient();
+
+    String callId = "";
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -53,11 +56,11 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCLIENT_INITILIZATION_RESPONSE".equals(action)) {
                     response.initializationResponse();
                 } else if ("CSCLIENT_LOGIN_RESPONSE".equals(action)) {
-                    response.loginResponse();
+                    response.loginResponse(CSClientObj);
                 } else if ("CSCLIENT_SIGNUP_RESPONSE".equals(action)) {
-                    response.handleResponse();
+                    response.handleResponse(action);
                 } else if ("CSCLIENT_ACTIVATION_RESPONSE".equals(action)) {
-                    response.handleResponse();
+                    response.handleResponse(action);
                 } else if ("CSCLIENT_ADDCONTACT_RESPONSE".equals(action)) {
                     response.contactResponse(action);
                 } else if ("CSCLIENT_DELETECONTACT_RESPONSE".equals(action)) {
@@ -65,9 +68,37 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCONTACTS_CONTACTSUPDATED".equals(action)) {
                     Log.i(TAG, "Contacts Updated");
                 } else if ("CSCLIENT_PSTN_REGISTRATION_RESPONSE".equals(action)) {
-                    response.handleResponse();
-                } else {
-                    Log.e(TAG, "Unknown Action: " + action);
+                    response.handleResponse(action);
+                } else if ("CSCALL_CALLANSWERED".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_CALLENDED".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_NOANSWER".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_NOMEDIA".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_RINGING".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_SESSION_IN_PROGRESS".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_MEDIACONNECTED".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_MEDIADISCONNECTED".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_CALLTERMINATED".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCLIENT_GSM_CALL_INPROGRESS".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCLIENT_PERMISSION_NEEDED".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_RECORDING_AT_SERVER".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_HOLD_UNHOLD_RESPONSE".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_MUTE_OR_UNMUTE".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_MUTE_OR_UNMUTE_ACK".equals(action)) {
+                    response.handleResponse(action);
                 }
 
                 Intents.logIntentData(intent, action);
@@ -108,6 +139,34 @@ public class MainActivity extends FlutterActivity {
                             CSClientObj,
                             call.argument("number")
                     );
+                    break;
+
+                case "initiateCall":
+                    callId = Voip_Call.makeCall(
+                            CSClientObj, CSCallObj, call.argument("number")
+                    );
+                    break;
+
+                case "onSpeaker":
+                    Voip_Call.onSpeaker(
+                            CSCallObj, callId, Boolean.TRUE.equals(call.argument("onSpeaker"))
+                    );
+                    break;
+
+                case "muteCall":
+                    Voip_Call.muteCall(
+                            CSCallObj, callId, Boolean.TRUE.equals(call.argument("onMute"))
+                    );
+                    break;
+
+                case "holdCall":
+                    Voip_Call.holdCall(
+                            CSCallObj, callId, Boolean.TRUE.equals(call.argument("onHold"))
+                    );
+                    break;
+
+                case "endCall":
+                    Voip_Call.endCall(CSCallObj, call.argument("number"), callId);
                     break;
 
                 case "resetSDK":

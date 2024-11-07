@@ -23,6 +23,23 @@ public class Intents {
         filter.addAction("CSCLIENT_ADDCONTACT_RESPONSE");
         filter.addAction("CSCLIENT_DELETECONTACT_RESPONSE");
         filter.addAction("CSCONTACTS_CONTACTSUPDATED");
+
+        filter.addAction("CSCALL_CALLANSWERED");
+        filter.addAction("CSCALL_CALLENDED");
+        filter.addAction("CSCALL_NOANSWER");
+        filter.addAction("CSCALL_NOMEDIA");
+        filter.addAction("CSCALL_RINGING");
+        filter.addAction("CSCALL_SESSION_IN_PROGRESS");
+        filter.addAction("CSCALL_MEDIACONNECTED");
+        filter.addAction("CSCALL_MEDIADISCONNECTED");
+        filter.addAction("CSCALL_CALLTERMINATED");
+        filter.addAction("CSCLIENT_GSM_CALL_INPROGRESS");
+        filter.addAction("CSCLIENT_PERMISSION_NEEDED");
+        filter.addAction("CSCALL_RECORDING_AT_SERVER");
+        filter.addAction("CSCALL_HOLD_UNHOLD_RESPONSE");
+        filter.addAction("CSCALL_MUTE_OR_UNMUTE");
+        filter.addAction("CSCALL_MUTE_OR_UNMUTE_ACK");
+
         return filter;
     }
 

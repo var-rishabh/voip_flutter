@@ -117,7 +117,7 @@ class _ContactsState extends State<Contacts> {
                             MaterialPageRoute(
                               builder: (context) => CallScreen(
                                 contactName: name,
-                                contactNumber: "+91$number",
+                                contactNumber: number,
                               ),
                             ),
                           );
