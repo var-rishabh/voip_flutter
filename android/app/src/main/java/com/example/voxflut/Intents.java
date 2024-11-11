@@ -39,6 +39,7 @@ public class Intents {
         filter.addAction("CSCALL_HOLD_UNHOLD_RESPONSE");
         filter.addAction("CSCALL_MUTE_OR_UNMUTE");
         filter.addAction("CSCALL_MUTE_OR_UNMUTE_ACK");
+        filter.addAction("CSCALL_CALLLOGUPDATED");
 
         return filter;
     }

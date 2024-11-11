@@ -16,6 +16,7 @@ import com.example.voxflut.functions.Auth;
 import com.example.voxflut.functions.Contact;
 import com.example.voxflut.functions.Voip_Call;
 
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
@@ -56,7 +57,7 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCLIENT_INITILIZATION_RESPONSE".equals(action)) {
                     response.initializationResponse();
                 } else if ("CSCLIENT_LOGIN_RESPONSE".equals(action)) {
-                    response.loginResponse(CSClientObj);
+                    response.loginResponse(CSClientObj, CSCallObj);
                 } else if ("CSCLIENT_SIGNUP_RESPONSE".equals(action)) {
                     response.handleResponse(action);
                 } else if ("CSCLIENT_ACTIVATION_RESPONSE".equals(action)) {
@@ -74,7 +75,7 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCALL_CALLENDED".equals(action)) {
                     response.handleResponse(action);
                 } else if ("CSCALL_NOANSWER".equals(action)) {
-                    response.handleResponse(action);
+                    response.callEndResponse(action);
                 } else if ("CSCALL_NOMEDIA".equals(action)) {
                     response.handleResponse(action);
                 } else if ("CSCALL_RINGING".equals(action)) {
@@ -86,7 +87,7 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCALL_MEDIADISCONNECTED".equals(action)) {
                     response.handleResponse(action);
                 } else if ("CSCALL_CALLTERMINATED".equals(action)) {
-                    response.handleResponse(action);
+                    response.callEndResponse(action);
                 } else if ("CSCLIENT_GSM_CALL_INPROGRESS".equals(action)) {
                     response.handleResponse(action);
                 } else if ("CSCLIENT_PERMISSION_NEEDED".equals(action)) {
@@ -98,6 +99,12 @@ public class MainActivity extends FlutterActivity {
                 } else if ("CSCALL_MUTE_OR_UNMUTE".equals(action)) {
                     response.handleResponse(action);
                 } else if ("CSCALL_MUTE_OR_UNMUTE_ACK".equals(action)) {
+                    response.handleResponse(action);
+                } else if ("CSCALL_CALLLOGUPDATED".equals(action)) {
+                    response.updateCallLogs();
+                }
+
+                else if ("CSCALL_AUDIOVIDEOCALLRINGING_RESPONSE".equals(action)) {
                     response.handleResponse(action);
                 }
 
@@ -167,6 +174,11 @@ public class MainActivity extends FlutterActivity {
 
                 case "endCall":
                     Voip_Call.endCall(CSCallObj, call.argument("number"), callId);
+                    break;
+
+                case "getCallLogs":
+                    Map<String, List<String>> callLogs = Voip_Call.getCallLogs();
+                    result.success(callLogs);
                     break;
 
                 case "resetSDK":

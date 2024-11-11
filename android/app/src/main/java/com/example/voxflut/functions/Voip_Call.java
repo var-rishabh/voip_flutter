@@ -1,10 +1,18 @@
 package com.example.voxflut.functions;
 
 import android.util.Log;
+import android.database.Cursor;
 
+import com.ca.Utils.CSDbFields;
 import com.ca.dao.CSLocation;
 import com.ca.wrapper.CSCall;
 import com.ca.wrapper.CSClient;
+import com.ca.wrapper.CSDataProvider;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Voip_Call {
     public static String makeCall(CSClient CSClientObj, CSCall CSCallObj, String number) {
@@ -35,5 +43,36 @@ public class Voip_Call {
     public static void endCall(CSCall CSCallObj, String number, String callId) {
         Log.i("VOX_SDK", "Ending call");
         CSCallObj.endPstnCall(number, callId);
+    }
+
+    public static Map<String, List<String>> getCallLogs() {
+        Cursor callLogsCursor = CSDataProvider.getCallLogCursor();
+        Map<String, List<String>> callLogs = new HashMap<>();
+        int iterationsForCallLogs = callLogsCursor.getCount();
+        if (callLogsCursor.getCount() > 0) {
+            while (iterationsForCallLogs > 0) {
+                callLogsCursor.moveToNext();
+
+                String callLogName = callLogsCursor.getString(callLogsCursor.getColumnIndexOrThrow(CSDbFields.KEY_CALLLOG_NAME));
+                String callLogNumber = callLogsCursor.getString(callLogsCursor.getColumnIndexOrThrow(CSDbFields.KEY_CALLLOG_NUMBER));
+                String callLogDir = callLogsCursor.getString(callLogsCursor.getColumnIndexOrThrow(CSDbFields.KEY_CALLLOG_DIR));
+                String callLogTime = callLogsCursor.getString(callLogsCursor.getColumnIndexOrThrow(CSDbFields.KEY_CALLLOG_TIME));
+                String callLogDuration = callLogsCursor.getString(callLogsCursor.getColumnIndexOrThrow(CSDbFields.KEY_CALLLOG_DURATION));
+                String callLogCallId = callLogsCursor.getString(callLogsCursor.getColumnIndexOrThrow(CSDbFields.KEY_CALLLOG_CALLID));
+
+                List<String> callLogDetails = new ArrayList<>();
+                callLogDetails.add(callLogName);
+                callLogDetails.add(callLogNumber);
+                callLogDetails.add(callLogDir);
+                callLogDetails.add(callLogTime);
+                callLogDetails.add(callLogDuration);
+                callLogs.put(callLogCallId, callLogDetails);
+
+                iterationsForCallLogs = iterationsForCallLogs - 1;
+            }
+        }
+
+        callLogsCursor.close();
+        return callLogs;
     }
 }

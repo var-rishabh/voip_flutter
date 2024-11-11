@@ -45,6 +45,7 @@ public class Contact {
             }
         }
 
+        contactsCursor.close();
         return contacts;
     }
 

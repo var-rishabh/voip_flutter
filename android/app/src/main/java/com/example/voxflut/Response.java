@@ -1,5 +1,8 @@
 package com.example.voxflut;
 
+import com.ca.Utils.CSConstants;
+import com.ca.dao.CSExplicitEventReceivers;
+import com.ca.wrapper.CSCall;
 import com.ca.wrapper.CSClient;
 import com.example.voxflut.functions.Auth;
 
@@ -33,11 +36,14 @@ public class Response {
         }
     }
 
-    public void loginResponse(CSClient CSClientObj) {
+    public void loginResponse(CSClient CSClientObj, CSCall CSCallObj) {
         if ("success".equals(result)) {
             Log.i(TAG, "Login Successful!");
 
             CSClientObj.registerForPSTNCalls();
+            CSCallObj.setPreferredAudioCodec(CSConstants.PreferredAudioCodec.G722);
+
+//            CSClientObj.registerExplicitEventReceivers(new CSExplicitEventReceivers("coreceivers.CSUserJoined", "receivers.CallReceiver"));
         } else {
             Log.e(TAG, "Login Failed! CSCLIENT_LOGIN_RESPONSE: " + result);
         }
@@ -64,6 +70,23 @@ public class Response {
                 EventNotifier.notify("contactDeleted", false);
             }
         }
+    }
+
+    public void callEndResponse(String action) {
+        if ("CSCALL_NOANSWER".equals(action)) {
+            Log.i(TAG, "CSCALL_NOANSWER = Call Not Picked!");
+            EventNotifier.notify("callNoAnswer", true);
+        } else if ("CSCALL_CALLTERMINATED".equals(action)) {
+            Log.i(TAG, "CSCALL_CALLTERMINATED = Call Terminated!");
+            EventNotifier.notify("callTerminated", true);
+        } else {
+            Log.e(TAG, action + " Failed! " + result);
+        }
+    }
+
+    public void updateCallLogs() {
+        Log.i(TAG, "CSCALL_CALLLOGUPDATED = Call Logs Updated!");
+        EventNotifier.notify("callLogsUpdated", true);
     }
 
     public void handleResponse(String action) {

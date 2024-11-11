@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 
+import '../models/call_log.dart';
+
 const platform = MethodChannel('com.vox/call');
 
 Future<void> initVoxSDK() async {
@@ -57,6 +59,37 @@ Future<void> endCall(String number) async {
     });
   } on PlatformException catch (e) {
     print('Failed to end call: ${e.message}');
+  }
+}
+
+Future<List<CallLog>> getCallLogs() async {
+  try {
+    List<CallLog> callLogs = [];
+
+    Map<dynamic, dynamic> result = await platform.invokeMethod('getCallLogs');
+
+    result.forEach((key, value) {
+      // print("VOX_SDK: CAll Duration : " + value[4]);
+      CallLog callLog = CallLog(
+        callId: key,
+        calleName: value[0],
+        calleNumber: value[1],
+        duration: CallLog.calculateDuration(value[4]),
+        callBoundType: CallLog.getCallBoundType(value[2]),
+        timeEpoch: value[3],
+        time: CallLog.convertEpochToTime(value[3]),
+      );
+
+      callLogs.add(callLog);
+    });
+
+    callLogs.sort(
+        (a, b) => int.parse(b.timeEpoch).compareTo(int.parse(a.timeEpoch)));
+
+    return callLogs;
+  } on PlatformException catch (e) {
+    print('Failed to get contacts: ${e.message}');
+    return [];
   }
 }
 

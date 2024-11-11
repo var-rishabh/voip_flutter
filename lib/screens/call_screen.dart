@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voxflut/helper/native_event_listner.dart';
 
 import '../helper/method_channels.dart';
 
@@ -49,6 +50,17 @@ class _CallScreenState extends State<CallScreen> {
   void initState() {
     super.initState();
     initiateCall(widget.contactNumber);
+
+    NativeEventListener.startListening((event) {
+      switch (event.keys.first) {
+        case 'callNoAnswer' || 'callTerminated':
+          if (event['callNoAnswer'] || event['callTerminated']) {
+            endCall(widget.contactNumber);
+            Navigator.pop(context);
+          }
+          break;
+      }
+    });
   }
 
   @override
