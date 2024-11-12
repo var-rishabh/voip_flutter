@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'helper/method_channels.dart';
 import 'helper/native_event_listner.dart';
+import 'helper/platform_channel.dart';
 import 'screens/call_logs.dart';
 import 'screens/contact/add_contact.dart';
 import 'screens/contact/contacts.dart';
