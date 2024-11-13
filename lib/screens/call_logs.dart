@@ -99,7 +99,10 @@ class _CallLogsState extends State<CallLogs> {
                             ),
                           );
                         },
-                        child: Icon(Icons.call, color: Colors.cyan.shade800),
+                        child: Icon(
+                          Icons.call,
+                          color: Colors.cyan.shade800,
+                        ),
                       ),
                     ],
                   ),

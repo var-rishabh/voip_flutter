@@ -60,9 +60,9 @@ class _DialPadState extends State<DialPad> {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.cyan.shade100,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(100),
         ),
-        minimumSize: const Size(120, 100),
+        minimumSize: const Size(100, 100),
       ),
       child: Text(
         number,
@@ -113,8 +113,8 @@ class _DialPadState extends State<DialPad> {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: kIsWeb ? 400 : 400),
             child: Wrap(
-              spacing: 15,
-              runSpacing: 15,
+              spacing: 30,
+              runSpacing: 30,
               alignment: WrapAlignment.center,
               children: [
                 ...List.generate(9, (index) {
@@ -129,9 +129,9 @@ class _DialPadState extends State<DialPad> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade400,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
+                      borderRadius: BorderRadius.circular(100),
                     ),
-                    minimumSize: const Size(120, 100),
+                    minimumSize: const Size(100, 100),
                   ),
                   child: const Icon(
                     Icons.delete,
@@ -145,9 +145,9 @@ class _DialPadState extends State<DialPad> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green.shade400,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
+                      borderRadius: BorderRadius.circular(100),
                     ),
-                    minimumSize: const Size(120, 100),
+                    minimumSize: const Size(100, 100),
                   ),
                   child: const Icon(
                     Icons.call,

@@ -18,7 +18,6 @@ function initializeCalmSDK() {
     });
 }
 
-
 function loginCalmSDK() {
     return new Promise((resolve, reject) => {
         function callback(code, message) {
@@ -31,6 +30,7 @@ function loginCalmSDK() {
             }
         }
 
-        CS.login("testUser1", "2116d01b_d461_4c5b_8ba3_c24fa40485e4", callback);
+        // CS.login("testUser1", "2116d01b_d461_4c5b_8ba3_c24fa40485e4", callback);
+        CS.login("+916301450563", "12345", callback);
     });
 }

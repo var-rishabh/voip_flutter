@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../models/call_log.dart';
 
 const platform = MethodChannel('com.vox/call');
 
-Future<void> initVoxSDK() async {
+Future<void> initVoxSDK(BuildContext context) async {
   try {
     await platform.invokeMethod('initVoxSDK');
   } on PlatformException catch (e) {

@@ -110,7 +110,10 @@ class _ContactsState extends State<Contacts> {
                       IconButton(
                         padding: const EdgeInsets.all(0),
                         constraints: null,
-                        icon: const Icon(Icons.call),
+                        icon: Icon(
+                          Icons.call,
+                          color: Colors.cyan.shade800,
+                        ),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -126,7 +129,10 @@ class _ContactsState extends State<Contacts> {
                       IconButton(
                         padding: const EdgeInsets.all(0),
                         constraints: null,
-                        icon: const Icon(Icons.delete),
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.cyan.shade800,
+                        ),
                         onPressed: () {
                           deleteContact(number);
                           _getContacts();
