@@ -9,10 +9,9 @@ class Permissions {
   }
 
   static Future<void> _requestStoragePermission() async {
-    final status = await Permission.photos.status;
+    final status = await Permission.storage.status;
     if (!status.isGranted) {
-      PermissionStatus result = await Permission.photos.request();
-      PermissionStatus result2 = await Permission.storage.request();
+      PermissionStatus result = await Permission.storage.request();
       if (result.isGranted) {
         print('VOX_SDK Storage permission granted');
       } else {

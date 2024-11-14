@@ -1,6 +1,3 @@
-@JS()
-library my_lib;
-
 import 'dart:js_util';
 
 import 'package:flutter/material.dart';

@@ -33,6 +33,12 @@ class _HomeState extends State<Home> {
     });
   }
 
+  // void handleWebEvents(String event) {
+  //   if (event == 'INIT_SUCCESS') {
+  //     print("VOX_SDK RIsbah is calml initialie  ");
+  //   }
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +46,8 @@ class _HomeState extends State<Home> {
         Provider.of<AuthProvider>(context, listen: false);
 
     initVoxSDK(context);
+
+    // js.context["onInitJSEvent"] = handleWebEvents;
 
     if (!kIsWeb) {
       Permissions.requestAllPermissions();

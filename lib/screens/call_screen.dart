@@ -146,7 +146,7 @@ class _CallScreenState extends State<CallScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
-        minimumSize: const Size(180, 0),
+        minimumSize: const Size(100, 100),
         padding: const EdgeInsets.all(20),
         backgroundColor: Colors.red,
       ),

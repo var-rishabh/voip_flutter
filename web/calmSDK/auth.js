@@ -1,4 +1,6 @@
 function initializeCalmSDK() {
+    CS.call.onMessage(handleCallFromSDK);
+
     return new Promise((resolve, reject) => {
         let config = {
             appId: "pid_0d5bb4ba_421b_4351_b6aa_f9585ba9f309"
